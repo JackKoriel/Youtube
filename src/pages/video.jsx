@@ -6,6 +6,8 @@ import {
 } from "@mui/icons-material";
 import React from "react";
 import styled from "styled-components";
+import Comments from "../components/comments";
+import Card from "../components/card";
 
 const Container = styled.div`
   display: flex;
@@ -154,8 +156,20 @@ const Video = () => {
           </ChannelInfo>
           <Subscribe>Subscribe</Subscribe>
         </Channel>
+        <Hr />
+        <Comments />
       </Content>
-      <Recommendation>Recommendation</Recommendation>
+      <Recommendation>
+        <Card type="sm" />
+        <Card type="sm" />
+        <Card type="sm" />
+        <Card type="sm" />
+        <Card type="sm" />
+        <Card type="sm" />
+        <Card type="sm" />
+        <Card type="sm" />
+        <Card type="sm" />
+      </Recommendation>
     </Container>
   );
 };
