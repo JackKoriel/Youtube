@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -47,17 +48,19 @@ const Info = styled.div`
 
 const Card = () => {
   return (
-    <Container>
-      <Image src="https://res.cloudinary.com/dhj5ncbxs/image/upload/v1638644638/samples/food/dessert.jpg" />
-      <Details>
-        <ChannelImage src="https://res.cloudinary.com/dhj5ncbxs/image/upload/v1639270189/contour-faceless-front-view-bald-man-beard-vector-illustration-87237510_rfb44q.jpg" />
-        <Texts>
-          <Title>Test Video</Title>
-          <ChannelName>Jack Dev</ChannelName>
-          <Info>660,900 views - 1 day ago</Info>
-        </Texts>
-      </Details>
-    </Container>
+    <Link to="/video/test" style={{ textDecoration: "none" }}>
+      <Container>
+        <Image src="https://res.cloudinary.com/dhj5ncbxs/image/upload/v1638644638/samples/food/dessert.jpg" />
+        <Details>
+          <ChannelImage src="https://res.cloudinary.com/dhj5ncbxs/image/upload/v1639270189/contour-faceless-front-view-bald-man-beard-vector-illustration-87237510_rfb44q.jpg" />
+          <Texts>
+            <Title>Test Video</Title>
+            <ChannelName>Jack Dev</ChannelName>
+            <Info>660,900 views - 1 day ago</Info>
+          </Texts>
+        </Details>
+      </Container>
+    </Link>
   );
 };
 

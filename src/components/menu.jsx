@@ -17,6 +17,7 @@ import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import SettingsBrightnessIcon from "@mui/icons-material/SettingsBrightness";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 const Container = styled.div`
   flex: 1;
@@ -84,10 +85,12 @@ const Menu = ({ darkmode, setDarkmode }) => {
   return (
     <Container>
       <Wrapper>
-        <Logo>
-          <Img src={LogoPlay} />
-          JaxTube
-        </Logo>
+        <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
+          <Logo>
+            <Img src={LogoPlay} />
+            JaxTube
+          </Logo>
+        </Link>
         <Item>
           <HomeIcon />
           Home
