@@ -2,6 +2,7 @@ import React from "react";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import SearchIcon from "@mui/icons-material/Search";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 const Container = styled.div`
   position: sticky;
@@ -62,10 +63,15 @@ const Navbar = () => {
             <Input placeholder="Search" />
             <SearchIcon />
           </Search>
-          <Button>
-            <AccountCircleIcon />
-            Sign In
-          </Button>
+          <Link
+            to="/signin"
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            <Button>
+              <AccountCircleIcon />
+              Sign In
+            </Button>
+          </Link>
         </Wrapper>
       </Container>
     </div>
