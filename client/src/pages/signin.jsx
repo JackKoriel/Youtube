@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import axios from "axios";
 
 const Container = styled.div`
   display: flex;
@@ -44,7 +45,7 @@ const Button = styled.button`
   padding: 10px 20px;
   cursor: pointer;
   font-weight: 500;
-  background-color: ${({ theme }) => theme.bgLight};
+  background-color: ${({ theme }) => theme.bg};
   color: ${({ theme }) => theme.textSoft};
 `;
 
@@ -64,18 +65,43 @@ const Link = styled.span`
 `;
 
 const Signin = () => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post("/auth/signin", { name, password });
+      console.log(res.data);
+    } catch (err) {}
+  };
   return (
     <Container>
       <Wrapper>
         <Title>Sign in</Title>
         <Subtitle>To continue to JaxTube</Subtitle>
-        <Input placeholder="Username" />
-        <Input type="password" placeholder="Password" />
-        <Button>Sign In</Button>
+        <Input
+          placeholder="Username"
+          onChange={(e) => setName(e.target.value)}
+        />
+        <Input
+          type="password"
+          placeholder="Password"
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <Button onClick={(e) => handleLogin(e)}>Sign In</Button>
         <Title>Or</Title>
-        <Input placeholder="Username" />
-        <Input placeholder="Email" />
-        <Input type="password" placeholder="Password" />
+        <Input
+          placeholder="Username"
+          onChange={(e) => setName(e.target.value)}
+        />
+        <Input placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
+        <Input
+          type="password"
+          placeholder="Password"
+          onChange={(e) => setPassword(e.target.value)}
+        />
         <Button>Sign Up</Button>
       </Wrapper>
       <More>
