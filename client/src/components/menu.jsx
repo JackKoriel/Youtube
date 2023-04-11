@@ -18,6 +18,7 @@ import SettingsBrightnessIcon from "@mui/icons-material/SettingsBrightness";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Container = styled.div`
   flex: 1;
@@ -85,6 +86,8 @@ const Title = styled.h2`
 `;
 
 const Menu = ({ darkmode, setDarkmode }) => {
+  const { currentUser } = useSelector((state) => state.user);
+
   return (
     <Container>
       <Wrapper>
@@ -123,19 +126,23 @@ const Menu = ({ darkmode, setDarkmode }) => {
           History
         </Item>
         <Hr />
-        <Login>
-          Sign in to like videos, comment, and subscribe.
-          <Link
-            to="/signin"
-            style={{ textDecoration: "none", color: "inherit" }}
-          >
-            <Button>
-              <AccountCircleIcon />
-              Sign In
-            </Button>
-          </Link>
-        </Login>
-        <Hr />
+        {!currentUser && (
+          <>
+            <Login>
+              Sign in to like videos, comment, and subscribe.
+              <Link
+                to="/signin"
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <Button>
+                  <AccountCircleIcon />
+                  Sign In
+                </Button>
+              </Link>
+            </Login>
+            <Hr />
+          </>
+        )}
         <Title>BEST OF JAXTUBE</Title>
         <Item>
           <LibraryMusicIcon />
