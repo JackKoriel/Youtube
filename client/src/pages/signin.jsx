@@ -3,6 +3,8 @@ import styled from "styled-components";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { loginFailure, loginStart, loginSuccess } from "../redux/userSlice";
+import { auth, provider } from "../firebase";
+import { signInWithPopup } from "firebase/auth";
 
 const Container = styled.div`
   display: flex;
@@ -83,6 +85,22 @@ const Signin = () => {
       dispatch(loginFailure());
     }
   };
+
+  const SignInWithGoogle = async () => {
+    dispatch(loginStart());
+    signInWithPopup(auth, provider).then((result) => {
+      axios
+        .post("/auth/google", {
+          name: result.user.displayName,
+          email: result.user.email,
+          img: result.user.photoURL,
+        })
+        .then((res) => {
+          dispatch(loginSuccess(res.data));
+        })
+        .catch((err) => dispatch(loginFailure()));
+    });
+  };
   return (
     <Container>
       <Wrapper>
@@ -98,6 +116,8 @@ const Signin = () => {
           onChange={(e) => setPassword(e.target.value)}
         />
         <Button onClick={(e) => handleLogin(e)}>Sign In</Button>
+        <Title>Or</Title>
+        <Button onClick={SignInWithGoogle}>Signin with Google</Button>
         <Title>Or</Title>
         <Input
           placeholder="Username"
