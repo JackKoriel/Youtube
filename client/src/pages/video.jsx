@@ -4,10 +4,16 @@ import {
   ThumbDownOffAltOutlined,
   ThumbUpOutlined,
 } from "@mui/icons-material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Comments from "../components/comments";
 import Card from "../components/card";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
+import axios from "axios";
+import { fetchStart, fetchSuccess } from "../redux/videoSlice";
+import { format } from "timeago.js";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const Container = styled.div`
   display: flex;
@@ -106,60 +112,98 @@ const Image = styled.img`
   border-radius: 50%;
 `;
 
+const Loading = styled.div`
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 200px;
+`;
+
 const Video = () => {
+  const { currentUser } = useSelector((state) => state.user);
+  const { currentVideo, loading } = useSelector((state) => state.video);
+
+  const dispatch = useDispatch();
+  //get video id to fetch video
+  const path = useLocation().pathname.split("/")[2];
+
+  const [channel, setChannel] = useState({});
+
+  useEffect(() => {
+    const fetchData = async () => {
+      dispatch(fetchStart());
+      try {
+        const videoRes = await axios.get(`/videos/find/${path}`);
+
+        const channelRes = await axios.get(
+          `/users/find/${videoRes.data.userId}`
+        );
+        setChannel(channelRes.data);
+        dispatch(fetchSuccess(videoRes.data));
+      } catch (err) {}
+    };
+    fetchData();
+  }, [path, dispatch]);
+
   return (
     <Container>
-      <Content>
-        <VideoWrapper>
-          <iframe
-            width="100%"
-            height="720"
-            src="https://www.youtube.com/embed/eG4mtDyPvaA"
-            title="YouTube video player"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowfullscreen
-          ></iframe>
-        </VideoWrapper>
-        <Title>Test Video</Title>
-        <Details>
-          <Info>660,900 views - 1 day ago</Info>
-          <Buttons>
-            <Button>
-              <ThumbUpOutlined /> 123
-            </Button>
-            <Button>
-              <ThumbDownOffAltOutlined /> Dislike
-            </Button>
-            <Button>
-              <ReplyOutlined /> Share
-            </Button>
-            <Button>
-              <AddTaskOutlined /> Send
-            </Button>
-          </Buttons>
-        </Details>
-        <Hr />
-        <Channel>
-          <ChannelInfo>
-            <Image src="https://res.cloudinary.com/dhj5ncbxs/image/upload/v1639270189/contour-faceless-front-view-bald-man-beard-vector-illustration-87237510_rfb44q.jpg" />
-            <ChannelDetail>
-              <ChannelName>Jack Dev</ChannelName>
-              <ChannelCounter>300K subscribers</ChannelCounter>
-              <Description>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias
-                pariatur laborum quis aspernatur velit impedit, earum eos vel,
-                repellendus assumenda accusamus voluptate autem exercitationem
-                molestiae tempora asperiores harum nostrum! Alias?
-              </Description>
-            </ChannelDetail>
-          </ChannelInfo>
-          <Subscribe>Subscribe</Subscribe>
-        </Channel>
-        <Hr />
-        <Comments />
-      </Content>
-      <Recommendation>
+      {loading ? (
+        <Loading>
+          <CircularProgress />
+        </Loading>
+      ) : (
+        <Content>
+          <VideoWrapper>
+            <iframe
+              width="100%"
+              height="720"
+              src="https://www.youtube.com/embed/eG4mtDyPvaA"
+              title="YouTube video player"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+            ></iframe>
+          </VideoWrapper>
+          <Title>{currentVideo?.title}</Title>
+          <Details>
+            <Info>
+              {currentVideo?.views} views - {format(currentVideo?.createdAt)}
+            </Info>
+            <Buttons>
+              <Button>
+                <ThumbUpOutlined /> {currentVideo?.likes?.length}
+              </Button>
+              <Button>
+                <ThumbDownOffAltOutlined /> Dislike
+              </Button>
+              <Button>
+                <ReplyOutlined /> Share
+              </Button>
+              <Button>
+                <AddTaskOutlined /> Send
+              </Button>
+            </Buttons>
+          </Details>
+          <Hr />
+          <Channel>
+            <ChannelInfo>
+              <Image src={channel.img} />
+              <ChannelDetail>
+                <ChannelName>{channel.name}</ChannelName>
+                <ChannelCounter>
+                  {channel.subscribers} subscribers
+                </ChannelCounter>
+                <Description>{currentVideo?.desc}</Description>
+              </ChannelDetail>
+            </ChannelInfo>
+            <Subscribe>Subscribe</Subscribe>
+          </Channel>
+          <Hr />
+          <Comments />
+        </Content>
+      )}
+      {/* <Recommendation>
         <Card type="sm" />
         <Card type="sm" />
         <Card type="sm" />
@@ -169,7 +213,7 @@ const Video = () => {
         <Card type="sm" />
         <Card type="sm" />
         <Card type="sm" />
-      </Recommendation>
+      </Recommendation> */}
     </Container>
   );
 };
