@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { fetchStart, fetchSuccess, like, dislike } from "../redux/videoSlice";
+import { subscription } from "../redux/userSlice";
 import { format } from "timeago.js";
 import CircularProgress from "@mui/material/CircularProgress";
 
@@ -167,6 +168,16 @@ const Video = () => {
     dispatch(dislike(currentUser._id));
   };
 
+  const handleSubscribe = async () => {
+    currentUser.subscribedUsers.includes(channel._id)
+      ? //unsub from channel
+        await axios.put(`/users/unsub/${channel._id}`)
+      : //subscribe to channel
+        await axios.put(`/users/sub/${channel._id}`);
+    //send payload with channel ID
+    dispatch(subscription(channel._id));
+  };
+
   return (
     <Container>
       {currentVideoLoading || currentUserLoading ? (
@@ -228,7 +239,11 @@ const Video = () => {
                 <Description>{currentVideo?.desc}</Description>
               </ChannelDetail>
             </ChannelInfo>
-            <Subscribe>Subscribe</Subscribe>
+            <Subscribe onClick={handleSubscribe}>
+              {currentUser.subscribedUsers?.includes(channel._id)
+                ? "SUBSCRIBED"
+                : "SUBSCRIBE"}
+            </Subscribe>
           </Channel>
           <Hr />
           <Comments />
