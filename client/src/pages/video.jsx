@@ -1,7 +1,9 @@
 import {
   AddTaskOutlined,
   ReplyOutlined,
+  ThumbDown,
   ThumbDownOffAltOutlined,
+  ThumbUp,
   ThumbUpOutlined,
 } from "@mui/icons-material";
 import React, { useEffect, useState } from "react";
@@ -11,7 +13,7 @@ import Card from "../components/card";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
-import { fetchStart, fetchSuccess } from "../redux/videoSlice";
+import { fetchStart, fetchSuccess, like, dislike } from "../redux/videoSlice";
 import { format } from "timeago.js";
 import CircularProgress from "@mui/material/CircularProgress";
 
@@ -57,6 +59,10 @@ const Button = styled.button`
   align-items: center;
   gap: 5px;
   cursor: pointer;
+  background: transparent;
+  color: ${({ theme }) => theme.text};
+  border: none;
+  font-size: 16px;
 `;
 
 const Hr = styled.hr`
@@ -121,9 +127,12 @@ const Loading = styled.div`
 `;
 
 const Video = () => {
-  const { currentUser } = useSelector((state) => state.user);
-  const { currentVideo, loading } = useSelector((state) => state.video);
-
+  const { currentUser, loading: currentUserLoading } = useSelector(
+    (state) => state.user
+  );
+  const { currentVideo, loading: currentVideoLoading } = useSelector(
+    (state) => state.video
+  );
   const dispatch = useDispatch();
   //get video id to fetch video
   const path = useLocation().pathname.split("/")[2];
@@ -146,9 +155,21 @@ const Video = () => {
     fetchData();
   }, [path, dispatch]);
 
+  const handleLike = async () => {
+    await axios.put(`/users/like/${currentVideo._id}`);
+    //send payload with userId
+    dispatch(like(currentUser._id));
+  };
+
+  const handleDislike = async () => {
+    await axios.put(`/users/dislike/${currentVideo._id}`);
+    //send payload with userId
+    dispatch(dislike(currentUser._id));
+  };
+
   return (
     <Container>
-      {loading ? (
+      {currentVideoLoading || currentUserLoading ? (
         <Loading>
           <CircularProgress />
         </Loading>
@@ -171,11 +192,21 @@ const Video = () => {
               {currentVideo?.views} views - {format(currentVideo?.createdAt)}
             </Info>
             <Buttons>
-              <Button>
-                <ThumbUpOutlined /> {currentVideo?.likes?.length}
+              <Button onClick={handleLike}>
+                {currentVideo?.likes?.includes(currentUser?._id) ? (
+                  <ThumbUp />
+                ) : (
+                  <ThumbUpOutlined />
+                )}{" "}
+                {currentVideo?.likes?.length}
               </Button>
-              <Button>
-                <ThumbDownOffAltOutlined /> Dislike
+              <Button onClick={handleDislike}>
+                {currentVideo?.dislikes?.includes(currentUser?._id) ? (
+                  <ThumbDown />
+                ) : (
+                  <ThumbDownOffAltOutlined />
+                )}{" "}
+                {currentVideo?.dislikes?.length}
               </Button>
               <Button>
                 <ReplyOutlined /> Share
