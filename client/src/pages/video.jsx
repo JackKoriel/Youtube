@@ -127,6 +127,13 @@ const Loading = styled.div`
   margin-top: 200px;
 `;
 
+const VideoFrame = styled.iframe`
+  max-height: 720px;
+  height: 650px;
+  width: 100%;
+  object-fit: cover;
+`;
+
 const Video = () => {
   const { currentUser, loading: currentUserLoading } = useSelector(
     (state) => state.user
@@ -187,15 +194,10 @@ const Video = () => {
       ) : (
         <Content>
           <VideoWrapper>
-            <iframe
-              width="100%"
-              height="720"
-              src="https://www.youtube.com/embed/eG4mtDyPvaA"
-              title="YouTube video player"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowfullscreen
-            ></iframe>
+            <VideoFrame
+              src={currentVideo?.videoUrl}
+              title={currentVideo?.title}
+            />
           </VideoWrapper>
           <Title>{currentVideo?.title}</Title>
           <Details>
