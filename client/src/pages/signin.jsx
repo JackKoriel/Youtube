@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { loginFailure, loginStart, loginSuccess } from "../redux/userSlice";
 import { auth, provider } from "../firebase";
 import { signInWithPopup } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 
 const Container = styled.div`
   display: flex;
@@ -75,12 +76,15 @@ const Signin = () => {
 
   const dispatch = useDispatch();
 
+  const navigate = useNavigate();
+
   const handleLogin = async (e) => {
     e.preventDefault();
     dispatch(loginStart());
     try {
       const res = await axios.post("/auth/signin", { name, password });
       dispatch(loginSuccess(res.data));
+      res.status === 200 && navigate("/");
     } catch (err) {
       dispatch(loginFailure());
     }
@@ -97,6 +101,7 @@ const Signin = () => {
         })
         .then((res) => {
           dispatch(loginSuccess(res.data));
+          navigate("/");
         })
         .catch((err) => dispatch(loginFailure()));
     });
