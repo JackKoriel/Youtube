@@ -1,5 +1,7 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { format } from "timeago.js";
 
 const Container = styled.div`
   display: flex;
@@ -36,21 +38,28 @@ const Text = styled.span`
   font-size: 14px;
 `;
 
-const Comment = () => {
+const Comment = ({ comment }) => {
+  const [user, setUser] = useState({});
+
+  useEffect(() => {
+    const fetchComment = async () => {
+      try {
+        const res = await axios.get(`/users/find/${comment.userId}`);
+        setUser(res.data);
+      } catch (err) {}
+    };
+    fetchComment();
+  }, [comment.userId]);
+
   return (
     <Container>
-      <Avatar src="https://res.cloudinary.com/dhj5ncbxs/image/upload/v1639270189/contour-faceless-front-view-bald-man-beard-vector-illustration-87237510_rfb44q.jpg" />
+      <Avatar src={user.img} />
       <Details>
         <Name>
-          Jon Doe
-          <Date>1 day ago</Date>
+          {user.name}
+          <Date>{format(comment.createdAt)}</Date>
         </Name>
-        <Text>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex non sint
-          natus asperiores, distinctio architecto eum veniam voluptas enim
-          maxime, saepe sunt numquam culpa laborum debitis ullam tempore impedit
-          atque!
-        </Text>
+        <Text>{comment.desc}</Text>
       </Details>
     </Container>
   );

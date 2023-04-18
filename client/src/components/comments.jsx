@@ -1,6 +1,8 @@
-import React from "react";
-import styled from "styled-components";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import Comment from "./comment";
+import styled from "styled-components";
+import { useSelector } from "react-redux";
 
 const Container = styled.div``;
 
@@ -25,18 +27,30 @@ const Input = styled.input`
   width: 100%;
 `;
 
-const Comments = () => {
+const Comments = ({ videoId }) => {
+  const { currentUser } = useSelector((state) => state.user);
+
+  const [comments, setComments] = useState([]);
+
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const res = await axios.get(`/comments/${videoId}`);
+        setComments(res.data);
+      } catch (err) {}
+    };
+    fetchComments();
+  }, [videoId]);
+
   return (
     <Container>
       <NewComment>
-        <Avatar src="https://res.cloudinary.com/dhj5ncbxs/image/upload/v1639270189/contour-faceless-front-view-bald-man-beard-vector-illustration-87237510_rfb44q.jpg" />
+        <Avatar src={currentUser.img} />
         <Input placeholder="Add a comment" />
       </NewComment>
-      <Comment />
-      <Comment />
-      <Comment />
-      <Comment />
-      <Comment />
+      {comments.map((comment) => {
+        return <Comment comment={comment} key={comment._id} />;
+      })}
     </Container>
   );
 };
