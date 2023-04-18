@@ -9,7 +9,7 @@ import {
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Comments from "../components/comments";
-import Card from "../components/card";
+import Recommendation from "../components/recommendation";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
@@ -24,9 +24,6 @@ const Container = styled.div`
 `;
 const Content = styled.div`
   flex: 5;
-`;
-const Recommendation = styled.div`
-  flex: 2;
 `;
 
 const VideoWrapper = styled.div``;
@@ -121,15 +118,14 @@ const Image = styled.img`
 
 const Loading = styled.div`
   height: 100%;
-  width: 100%;
+  width: 70%;
   display: flex;
   justify-content: center;
   margin-top: 200px;
 `;
 
-const VideoFrame = styled.iframe`
+const VideoFrame = styled.video`
   max-height: 720px;
-  height: 650px;
   width: 100%;
   object-fit: cover;
 `;
@@ -197,6 +193,7 @@ const Video = () => {
             <VideoFrame
               src={currentVideo?.videoUrl}
               title={currentVideo?.title}
+              controls
             />
           </VideoWrapper>
           <Title>{currentVideo?.title}</Title>
@@ -251,17 +248,7 @@ const Video = () => {
           <Comments videoId={currentVideo?._id} />
         </Content>
       )}
-      {/* <Recommendation>
-        <Card type="sm" />
-        <Card type="sm" />
-        <Card type="sm" />
-        <Card type="sm" />
-        <Card type="sm" />
-        <Card type="sm" />
-        <Card type="sm" />
-        <Card type="sm" />
-        <Card type="sm" />
-      </Recommendation> */}
+      <Recommendation tags={currentVideo?.tags} />
     </Container>
   );
 };
